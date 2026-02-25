@@ -465,25 +465,8 @@ nav {
   </div>
 </div>
 
-<div id="coming-soon" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000;">
-    <div style="position: absolute; width:100%; height:100%; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.05; pointer-events: none;"></div>
+<div id="coming-soon" style="position:fixed;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;"><div style="position:absolute;inset:0;pointer-events:none;opacity:0.7;background-image:url(data:image/svg+xml;charset=utf8,%3Csvg%20viewBox%3D%220%200%20200%20200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.9%22%20numOctaves%3D%224%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23n)%22%20opacity%3D%220.04%22%2F%3E%3C%2Fsvg%3E);"></div><div style="position:relative;z-index:1;max-width:480px;width:100%;"><div id="cs-logo" style="font-family:Cormorant,serif;font-weight:300;font-size:20px;letter-spacing:0.45em;color:#fff;text-transform:lowercase;margin-bottom:80px;">kuwadro</div><div style="font-family:Bebas Neue,sans-serif;font-size:clamp(52px,10vw,96px);line-height:0.9;color:#fff;letter-spacing:0.02em;margin-bottom:24px;">Something<br>Is<br>Coming</div><p style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#555;line-height:2.2;margin-bottom:60px;">SS25 Collection — Dropping Soon.<br>Be the first to know.</p><div style="display:flex;gap:0;border:1px solid #222;margin-bottom:16px;"><input id="cs-email" type="email" placeholder="your@email.com" style="flex:1;background:#000;border:none;color:#ccc;font-family:Space Mono,monospace;font-size:11px;padding:16px 20px;outline:none;cursor:crosshair;" onkeydown="if(event.key==='Enter')csSubmit()"><button onclick="csSubmit()" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" style="background:#fff;color:#000;border:none;font-family:Space Mono,monospace;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;padding:16px 24px;cursor:crosshair;white-space:nowrap;transition:opacity 0.2s;">Get 10% Off</button></div><p id="cs-msg" style="font-size:9px;letter-spacing:0.2em;color:#555;text-transform:uppercase;min-height:16px;margin-bottom:8px;"></p><p style="font-size:9px;letter-spacing:0.15em;color:#333;text-transform:uppercase;">No spam. Unsubscribe anytime.</p></div></div>
 
-    <div style="position: absolute; top: 40px; left: 40px;">
-        <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; letter-spacing: 0.3em; color: #fff; font-size: 1.2rem; margin: 0; text-transform: lowercase;">kuwadro</h1>
-    </div>
-
-    <div style="position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center;">
-        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 12vw; color: #fff; line-height: 0.8; margin: 0; text-transform: uppercase; letter-spacing: -0.02em;">SOMETHING<br><span style="margin-left: 20vw;">IS COMING</span></h2>
-    </div>
-
-    <div id="cs-form-container" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 320px; padding: 0 20px;">
-        <div style="display: flex; border-bottom: 1px solid #fff; padding-bottom: 8px;">
-            <input type="email" id="cs-email" placeholder="EMAIL ADDRESS" style="background: transparent; border: none; color: #fff; font-family: 'Space Mono', monospace; font-size: 11px; width: 100%; outline: none; text-transform: uppercase;">
-            <button onclick="csSubmit()" style="background: transparent; border: none; color: #fff; font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; white-space: nowrap;">JOIN_</button>
-        </div>
-        <p id="cs-msg" style="font-family: 'Space Mono', monospace; font-size: 9px; color: #fff; margin-top: 10px; text-transform: uppercase;"></p>
-    </div>
-</div>
 <div class="toast" id="toast"></div>
 
 <div class="success-screen" id="success-screen">
