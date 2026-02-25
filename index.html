@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KUWADRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant:wght@300&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #000; --concrete: #111; --ash: #222;
+  --dust: #555; --crack: #888; --bone: #ccc; --white: #fff;
+}
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--black);
+  color: var(--bone);
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  cursor: crosshair;
+}
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 24px 40px;
+  background: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+.nav-logo {
+  font-family:'Cormorant',serif; font-weight:300; font-size:18px;
+  letter-spacing:0.35em; color:var(--white); text-transform:lowercase;
+  cursor:crosshair; border:none; background:none;
+}
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  color:var(--crack); text-decoration:none; font-size:10px;
+  letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; cursor:crosshair;
+}
+.nav-links a:hover { color:var(--white); }
+.nav-cart {
+  background:none; border:none; color:var(--crack);
+  font-family:'Space Mono',monospace; font-size:10px;
+  letter-spacing:0.2em; text-transform:uppercase; cursor:crosshair; transition:color 0.2s;
+}
+.nav-cart:hover { color:var(--white); }
+
+/* PAGE SYSTEM — each page is fixed + fills viewport, scrolls internally */
+.page {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+.page.active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 2;
+}
+
+/* LANDING */
+#page-landing {
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.btn-enter {
+  background:none; border:1px solid #333; color:var(--bone);
+  font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.35em;
+  text-transform:uppercase; padding:18px 48px; cursor:crosshair;
+  position:relative; overflow:hidden; transition:color 0.35s, border-color 0.35s;
+}
+.btn-enter::before {
+  content:''; position:absolute; inset:0; background:var(--white);
+  transform:translateX(-101%); transition:transform 0.4s ease;
+}
+.btn-enter:hover::before { transform:translateX(0); }
+.btn-enter:hover { color:var(--black); border-color:var(--white); }
+.btn-enter span { position:relative; z-index:1; }
+
+/* INNER WRAPPER */
+.page-inner { padding: 110px 40px 80px; }
+
+/* PAGE HEADER */
+.page-header {
+  display:flex; justify-content:space-between; align-items:baseline;
+  margin-bottom:60px; border-bottom:1px solid var(--ash); padding-bottom:20px;
+}
+.page-header h2 {
+  font-family:'Bebas Neue',sans-serif; font-size:64px;
+  color:var(--white); letter-spacing:0.05em; line-height:1;
+}
+.page-header span { font-size:10px; letter-spacing:0.2em; color:var(--dust); text-transform:uppercase; }
+.section-label { font-size:10px; letter-spacing:0.2em; color:var(--dust); text-transform:uppercase; margin-bottom:6px; }
+
+/* SHOP */
+.products-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.product-card {
+  background:var(--concrete); cursor:crosshair;
+  position:relative; overflow:hidden; aspect-ratio:3/4;
+}
+.product-img { position:absolute; inset:0; transition:transform 0.6s ease; }
+.product-card:hover .product-img { transform:scale(1.04); }
+.product-img-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.prod-shape { width:60%; height:70%; }
+.prod-shape svg { width:100%; height:100%; }
+.product-tag {
+  position:absolute; top:16px; left:16px;
+  font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--dust); z-index:3;
+}
+.product-overlay {
+  position:absolute; bottom:0; left:0; right:0; padding:20px; z-index:3;
+  background:linear-gradient(to top,rgba(0,0,0,0.96) 50%,transparent 100%);
+}
+.product-name { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--white); letter-spacing:0.05em; line-height:1; }
+.product-price { font-size:11px; color:var(--crack); letter-spacing:0.1em; margin-top:4px; }
+.product-hover-reveal { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+.product-card:hover .product-hover-reveal { max-height:110px; }
+.product-desc-small { font-size:10px; color:var(--dust); letter-spacing:0.05em; margin-top:8px; margin-bottom:10px; line-height:1.8; }
+.btn-add {
+  background:none; border:1px solid var(--bone); color:var(--bone);
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em;
+  text-transform:uppercase; padding:8px 16px; cursor:crosshair; width:100%; transition:all 0.2s;
+}
+.btn-add:hover { background:var(--white); color:var(--black); border-color:var(--white); }
+
+/* PRODUCT DETAIL */
+.btn-back {
+  background:none; border:none; color:var(--dust); font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:0.2em; text-transform:uppercase; cursor:crosshair;
+  margin-bottom:48px; display:flex; align-items:center; gap:8px; transition:color 0.2s; padding:0;
+}
+.btn-back:hover { color:var(--white); }
+.detail-layout { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.detail-visual { aspect-ratio:3/4; background:var(--concrete); display:flex; align-items:center; justify-content:center; }
+.detail-visual svg { width:55%; height:70%; }
+.detail-tag { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--dust); margin-bottom:12px; }
+.detail-name { font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:0.9; color:var(--white); letter-spacing:0.02em; margin-bottom:16px; }
+.detail-price { font-family:'Bebas Neue',sans-serif; font-size:30px; color:var(--crack); letter-spacing:0.1em; margin-bottom:32px; }
+.detail-desc { font-size:12px; color:var(--crack); line-height:2.4; border-top:1px solid var(--ash); padding-top:24px; margin-bottom:32px; }
+.detail-specs { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--ash); margin-bottom:32px; }
+.spec-item { background:var(--concrete); padding:16px; }
+.spec-label { font-size:8px; letter-spacing:0.3em; text-transform:uppercase; color:var(--dust); margin-bottom:6px; }
+.spec-value { font-size:11px; color:var(--bone); }
+.size-row { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.size-btn {
+  background:none; border:1px solid var(--ash); color:var(--crack);
+  font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.1em;
+  padding:10px 18px; cursor:crosshair; transition:all 0.2s;
+}
+.size-btn:hover, .size-btn.sel { border-color:var(--white); color:var(--white); }
+.btn-submit {
+  width:100%; background:var(--white); color:var(--black); border:none;
+  padding:20px; font-family:'Space Mono',monospace; font-size:11px;
+  letter-spacing:0.3em; text-transform:uppercase; cursor:crosshair; transition:opacity 0.2s;
+}
+.btn-submit:hover { opacity:0.85; }
+
+/* LOOKBOOK */
+.lookbook-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:2px; }
+.look-item { background:var(--concrete); overflow:hidden; position:relative; }
+.look-item:nth-child(1) { grid-column:span 7; grid-row:span 2; aspect-ratio:7/6; }
+.look-item:nth-child(2) { grid-column:span 5; aspect-ratio:5/4; }
+.look-item:nth-child(3) { grid-column:span 5; aspect-ratio:5/4; }
+.look-item:nth-child(4) { grid-column:span 4; aspect-ratio:1; }
+.look-item:nth-child(5) { grid-column:span 4; aspect-ratio:1; }
+.look-item:nth-child(6) { grid-column:span 4; aspect-ratio:1; }
+.look-visual {
+  width:100%; height:100%; min-height:200px; display:flex;
+  align-items:center; justify-content:center; position:relative;
+  overflow:hidden; transition:transform 0.7s ease;
+}
+.look-item:hover .look-visual { transform:scale(1.03); }
+.look-label { position:absolute; bottom:14px; left:14px; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--crack); z-index:2; }
+
+/* ABOUT */
+.about-layout { display:grid; grid-template-columns:1fr 1fr; gap:80px; margin-bottom:80px; align-items:start; }
+.about-text h3 { font-family:'Bebas Neue',sans-serif; font-size:52px; color:var(--white); letter-spacing:0.05em; line-height:1; margin-bottom:32px; }
+.about-text p { color:var(--crack); line-height:2.4; font-size:12px; margin-bottom:20px; }
+.about-manifesto { border-left:1px solid var(--ash); padding-left:40px; }
+.about-manifesto blockquote { font-family:'Bebas Neue',sans-serif; font-size:clamp(32px,5vw,68px); line-height:1.05; color:var(--white); letter-spacing:0.02em; }
+.about-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--ash); }
+.stat-item { background:var(--concrete); padding:24px 20px; }
+.stat-item label { display:block; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--dust); margin-bottom:8px; }
+.stat-item span { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--white); letter-spacing:0.05em; }
+
+/* CHECKOUT */
+.checkout-layout { display:grid; grid-template-columns:1fr 400px; gap:60px; align-items:start; }
+.co-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--white); letter-spacing:0.1em; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--ash); }
+.pay-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:28px; }
+.pay-opt { border:1px solid var(--ash); background:var(--concrete); color:var(--dust); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.1em; padding:14px; text-align:center; cursor:crosshair; transition:all 0.2s; }
+.pay-opt:hover { border-color:var(--crack); color:var(--bone); }
+.pay-opt.active { border-color:var(--white); color:var(--white); }
+.pay-icon { font-size:18px; display:block; margin-bottom:6px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { margin-bottom:12px; }
+.form-group label { display:block; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--dust); margin-bottom:8px; }
+.form-group input, .form-group select { width:100%; background:var(--concrete); border:1px solid var(--ash); color:var(--bone); font-family:'Space Mono',monospace; font-size:12px; padding:14px 16px; outline:none; transition:border-color 0.2s; appearance:none; cursor:crosshair; }
+.form-group input:focus, .form-group select:focus { border-color:var(--white); }
+.form-group input::placeholder { color:var(--dust); }
+.sw { background:var(--concrete); border:1px solid var(--ash); padding:14px 16px; margin-bottom:12px; display:flex; align-items:center; transition:border-color 0.2s; position:relative; }
+.sw.focused { border-color:var(--white); }
+.sw input { background:none; border:none; color:var(--bone); font-family:'Space Mono',monospace; font-size:12px; width:100%; outline:none; cursor:crosshair; }
+.sw input::placeholder { color:var(--dust); }
+.sw-badge { position:absolute; right:14px; font-size:8px; letter-spacing:0.15em; color:var(--ash); text-transform:uppercase; }
+.paypal-box, .apple-box { display:none; background:var(--concrete); border:1px solid var(--ash); padding:28px; text-align:center; margin-bottom:12px; }
+.paypal-box p, .apple-box p { font-size:11px; color:var(--dust); letter-spacing:0.1em; margin-bottom:20px; }
+.btn-paypal { background:#0070ba; color:#fff; border:none; padding:14px 40px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:0.1em; cursor:crosshair; transition:opacity 0.2s; }
+.btn-paypal:hover { opacity:0.85; }
+.btn-apple { background:#000; color:#fff; border:1px solid var(--crack); padding:14px 40px; font-size:20px; cursor:crosshair; transition:opacity 0.2s; }
+.btn-apple:hover { opacity:0.7; }
+.order-summary { background:var(--concrete); padding:32px; position:sticky; top:110px; }
+.ci-row { display:flex; gap:14px; align-items:center; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--ash); }
+.ci-thumb { width:56px; height:66px; background:var(--ash); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.ci-info { flex:1; }
+.ci-name { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--white); letter-spacing:0.05em; line-height:1.2; margin-bottom:4px; }
+.ci-meta { font-size:9px; color:var(--dust); letter-spacing:0.1em; text-transform:uppercase; }
+.ci-price { font-size:12px; color:var(--bone); white-space:nowrap; }
+.tr { display:flex; justify-content:space-between; margin-bottom:10px; font-size:11px; color:var(--dust); letter-spacing:0.05em; }
+.tr.grand { border-top:1px solid var(--ash); padding-top:12px; margin-top:8px; color:var(--white); font-weight:700; }
+
+/* CART DRAWER */
+.cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:600; display:none; opacity:0; transition:opacity 0.3s; }
+.cart-overlay.open { display:block; opacity:1; }
+.cart-drawer { position:fixed; top:0; right:0; bottom:0; width:400px; background:var(--concrete); z-index:700; transform:translateX(100%); transition:transform 0.4s ease; padding:40px; display:flex; flex-direction:column; }
+.cart-drawer.open { transform:translateX(0); }
+.drawer-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid var(--ash); }
+.drawer-head h3 { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--white); letter-spacing:0.1em; }
+.btn-close { background:none; border:none; color:var(--dust); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:crosshair; transition:color 0.2s; }
+.btn-close:hover { color:var(--white); }
+.drawer-items { flex:1; overflow-y:auto; }
+.cart-empty-msg { display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; color:var(--dust); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; gap:12px; }
+.cart-empty-icon { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--ash); }
+.drawer-footer { border-top:1px solid var(--ash); padding-top:24px; margin-top:24px; display:none; }
+.drawer-total { display:flex; justify-content:space-between; margin-bottom:20px; font-size:11px; color:var(--bone); letter-spacing:0.1em; text-transform:uppercase; }
+.drawer-total strong { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--white); }
+
+/* TOAST */
+.toast { position:fixed; bottom:36px; left:36px; background:var(--white); color:var(--black); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; padding:14px 24px; z-index:9000; transform:translateY(80px); opacity:0; transition:all 0.3s; }
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* SUCCESS */
+.success-screen { display:none; position:fixed; inset:0; background:var(--black); z-index:8000; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.success-screen.show { display:flex; }
+.success-screen h2 { font-family:'Bebas Neue',sans-serif; font-size:96px; color:var(--white); letter-spacing:0.05em; line-height:1; margin-bottom:20px; }
+.success-screen .oid { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.2em; color:var(--crack); margin-bottom:32px; }
+.success-screen p { font-size:11px; letter-spacing:0.15em; color:var(--dust); text-transform:uppercase; margin-bottom:40px; }
+
+/* FOOTER */
+.site-footer { border-top:1px solid var(--ash); padding:32px 0 0; margin-top:80px; display:flex; justify-content:space-between; align-items:center; }
+.site-footer p { font-size:9px; letter-spacing:0.15em; color:var(--dust); text-transform:uppercase; }
+.site-footer nav { display:flex; gap:24px; }
+.site-footer nav a { font-size:9px; letter-spacing:0.15em; color:var(--ash); text-decoration:none; text-transform:uppercase; transition:color 0.2s; }
+.site-footer nav a:hover { color:var(--bone); }
+
+::-webkit-scrollbar { width:2px; }
+::-webkit-scrollbar-track { background:var(--black); }
+::-webkit-scrollbar-thumb { background:var(--ash); }
+
+@media (max-width:900px) {
+  nav { padding:18px 20px; }
+  .nav-links { display:none; }
+  .page-inner { padding:90px 20px 60px; }
+  .products-grid { grid-template-columns:repeat(2,1fr); }
+  .checkout-layout { grid-template-columns:1fr; }
+  .about-layout { grid-template-columns:1fr; }
+  .detail-layout { grid-template-columns:1fr; }
+  .lookbook-grid { grid-template-columns:1fr 1fr; }
+  .look-item:nth-child(1) { grid-column:span 2; }
+  .about-stats { grid-template-columns:1fr; }
+  .cart-drawer { width:100%; }
+  .site-footer { flex-direction:column; gap:16px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-logo" onclick="go('landing')">kuwadro</button>
+  <ul class="nav-links">
+    <li><a href="#" onclick="go('shop');return false;">Shop</a></li>
+    <li><a href="#" onclick="go('lookbook');return false;">Lookbook</a></li>
+    <li><a href="#" onclick="go('about');return false;">About</a></li>
+  </ul>
+  <button class="nav-cart" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</button>
+</nav>
+
+<!-- LANDING -->
+<div id="page-landing" class="page active">
+  <button class="btn-enter" onclick="go('shop')">
+    <span>Enter Collection</span>
+  </button>
+</div>
+
+<!-- SHOP -->
+<div id="page-shop" class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div><div class="section-label">SS25</div><h2>Shop</h2></div>
+      <span>6 Pieces</span>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+    <div class="site-footer">
+      <p>© 2025 Kuwadro</p>
+      <nav><a href="#">Shipping</a><a href="#">Returns</a><a href="#">Privacy</a></nav>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div id="page-product" class="page">
+  <div class="page-inner">
+    <button class="btn-back" onclick="go('shop')">← Back to Shop</button>
+    <div class="detail-layout">
+      <div class="detail-visual" id="detail-visual"></div>
+      <div>
+        <div class="detail-tag" id="detail-tag"></div>
+        <div class="detail-name" id="detail-name"></div>
+        <div class="detail-price" id="detail-price"></div>
+        <div class="detail-desc" id="detail-desc"></div>
+        <div class="detail-specs" id="detail-specs"></div>
+        <div style="margin-bottom:12px;">
+          <div class="spec-label" style="margin-bottom:10px;">Select Size</div>
+          <div class="size-row">
+            <button class="size-btn" onclick="pickSize(this)">XS</button>
+            <button class="size-btn sel" onclick="pickSize(this)">S</button>
+            <button class="size-btn" onclick="pickSize(this)">M</button>
+            <button class="size-btn" onclick="pickSize(this)">L</button>
+            <button class="size-btn" onclick="pickSize(this)">XL</button>
+          </div>
+        </div>
+        <button class="btn-submit" id="detail-add-btn">+ Add to Cart</button>
+        <p style="font-size:9px;letter-spacing:0.15em;color:var(--dust);text-transform:uppercase;margin-top:14px;">Free shipping over PHP 5,000 · 14-day returns</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOOKBOOK -->
+<div id="page-lookbook" class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div><div class="section-label">Visual</div><h2>Lookbook</h2></div>
+      <span>SS25 — Vol. I</span>
+    </div>
+    <div class="lookbook-grid">
+      <div class="look-item"><div class="look-visual" style="background:#111;"><svg width="38%" height="65%" viewBox="0 0 200 300" fill="none"><rect x="60" y="20" width="80" height="260" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="20" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="140" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/></svg><div class="look-label">Look 01 — Overcoat</div></div></div>
+      <div class="look-item"><div class="look-visual" style="background:#0d0d0d;"><svg width="48%" height="68%" viewBox="0 0 200 280" fill="none"><ellipse cx="100" cy="60" rx="40" ry="50" fill="#181818" stroke="#252525" stroke-width="1"/><path d="M60 100 Q20 140 30 240 L170 240 Q180 140 140 100Z" fill="#181818" stroke="#252525" stroke-width="1"/></svg><div class="look-label">Look 02 — Silhouette</div></div></div>
+      <div class="look-item"><div class="look-visual" style="background:#0e0e0e;"><svg width="55%" height="78%" viewBox="0 0 200 300" fill="none"><rect x="40" y="0" width="120" height="300" fill="#1a1a1a" stroke="#262626" stroke-width="1"/><rect x="0" y="40" width="40" height="120" fill="#1a1a1a" stroke="#262626" stroke-width="1"/><rect x="160" y="40" width="40" height="120" fill="#1a1a1a" stroke="#262626" stroke-width="1"/></svg><div class="look-label">Look 03 — Column</div></div></div>
+      <div class="look-item"><div class="look-visual" style="background:#0a0a0a;"><svg width="50%" height="58%" viewBox="0 0 200 200" fill="none"><rect x="30" y="60" width="140" height="120" fill="#161616" stroke="#222" stroke-width="1"/><rect x="60" y="0" width="80" height="70" fill="#161616" stroke="#222" stroke-width="1"/></svg><div class="look-label">Look 04 — Vest</div></div></div>
+      <div class="look-item"><div class="look-visual" style="background:#0c0c0c;"><svg width="38%" height="68%" viewBox="0 0 160 280" fill="none"><path d="M20 0 L140 0 L160 280 L0 280Z" fill="#181818" stroke="#242424" stroke-width="1"/></svg><div class="look-label">Look 05 — Taper</div></div></div>
+      <div class="look-item"><div class="look-visual" style="background:#0d0d0d;"><svg width="58%" height="58%" viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="80" fill="#161616" stroke="#222" stroke-width="1"/><circle cx="100" cy="100" r="48" fill="#111" stroke="#1c1c1c" stroke-width="1"/><circle cx="100" cy="100" r="18" fill="#0a0a0a" stroke="#161616" stroke-width="1"/></svg><div class="look-label">Look 06 — Statement</div></div></div>
+    </div>
+    <div class="site-footer">
+      <p>© 2025 Kuwadro</p>
+      <nav><a href="#">Instagram</a><a href="#">Press</a><a href="#">Contact</a></nav>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div><div class="section-label">Identity</div><h2>About</h2></div>
+    </div>
+    <div class="about-layout">
+      <div class="about-text">
+        <h3>Form<br>Without<br>Apology</h3>
+        <p>Kuwadro is built on the principle that clothing should impose itself on the world — not conform to it. Each piece is engineered for mass, proportion, and silence.</p>
+        <p>We work with dead-stock fabrics, raw canvas, compressed wools and treated leathers. Nothing decorative. Nothing ornamental. Everything earned.</p>
+        <p>Made in small batches. Shipped globally. Worn once, kept forever.</p>
+      </div>
+      <div class="about-manifesto">
+        <blockquote>Structure<br>is the<br>only<br>luxury</blockquote>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item"><label>Founded</label><span>MMXXV</span></div>
+      <div class="stat-item"><label>Pieces per drop</label><span>12 — 18</span></div>
+      <div class="stat-item"><label>Material standard</label><span>Grade A</span></div>
+    </div>
+    <div class="site-footer">
+      <p>© 2025 Kuwadro</p>
+      <nav><a href="#">Stockists</a><a href="#">Press</a><a href="#">Contact</a></nav>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="page-checkout" class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div><div class="section-label">Complete Order</div><h2>Checkout</h2></div>
+    </div>
+    <div class="checkout-layout">
+      <div>
+        <div class="co-title">Payment Method</div>
+        <div class="pay-methods">
+          <div class="pay-opt active" onclick="pickPay('card',this)"><span class="pay-icon">▦</span>Card</div>
+          <div class="pay-opt" onclick="pickPay('paypal',this)"><span class="pay-icon">P</span>PayPal</div>
+          <div class="pay-opt" onclick="pickPay('apple',this)"><span class="pay-icon"></span>Apple Pay</div>
+        </div>
+        <div id="pay-card">
+          <div class="co-title">Card Details</div>
+          <div class="sw" id="sw1"><input type="text" placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)" id="card-num"><span class="sw-badge">Stripe</span></div>
+          <div class="form-row">
+            <div class="sw" id="sw2"><input type="text" placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)"></div>
+            <div class="sw" id="sw3"><input type="text" placeholder="CVC" maxlength="3"><span class="sw-badge">3 digits</span></div>
+          </div>
+        </div>
+        <div class="paypal-box" id="pay-paypal"><p>You'll be redirected to PayPal to complete your payment securely.</p><button class="btn-paypal" onclick="handlePayPal()">Continue with PayPal</button></div>
+        <div class="apple-box" id="pay-apple"><p>Authenticate with Face ID or Touch ID to complete your order.</p><button class="btn-apple" onclick="handleApple()"> Pay</button></div>
+        <div style="height:20px;"></div>
+        <div class="co-title">Contact</div>
+        <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="your@email.com"></div>
+        <div class="co-title" style="margin-top:8px;">Shipping</div>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="First"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last"></div>
+        </div>
+        <div class="form-group"><label>Address</label><input type="text" placeholder="Street address"></div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" placeholder="City"></div>
+          <div class="form-group"><label>Postal Code</label><input type="text" placeholder="00000"></div>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <select><option value="">Select country</option><option>Philippines</option><option>United States</option><option>United Kingdom</option><option>Japan</option><option>France</option><option>Germany</option><option>Australia</option></select>
+        </div>
+        <div id="card-submit"><button class="btn-submit" onclick="submitOrder()" style="margin-top:8px;">Place Order</button></div>
+        <p style="font-size:9px;letter-spacing:0.12em;color:var(--dust);text-transform:uppercase;margin-top:14px;text-align:center;">Secured by Stripe · 256-bit SSL</p>
+      </div>
+      <div class="order-summary">
+        <div class="co-title">Order Summary</div>
+        <div id="checkout-items"></div>
+        <div class="tr"><span>Subtotal</span><span id="co-sub">—</span></div>
+        <div class="tr"><span>Shipping</span><span>TBD</span></div>
+        <div class="tr grand"><span>Total</span><span id="co-total">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="drawer-head">
+    <h3>Cart</h3>
+    <button class="btn-close" onclick="toggleCart()">Close ×</button>
+  </div>
+  <div class="drawer-items" id="drawer-items"></div>
+  <div class="drawer-footer" id="drawer-footer">
+    <div class="drawer-total"><span>Total</span><strong id="drawer-total-val">—</strong></div>
+    <button class="btn-submit" onclick="toggleCart();go('checkout');">Proceed to Checkout</button>
+  </div>
+</div>
+
+<div id="coming-soon" style="position:fixed;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;"><div style="position:absolute;inset:0;pointer-events:none;opacity:0.7;background-image:url(data:image/svg+xml;charset=utf8,%3Csvg%20viewBox%3D%220%200%20200%20200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.9%22%20numOctaves%3D%224%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23n)%22%20opacity%3D%220.04%22%2F%3E%3C%2Fsvg%3E);"></div><div style="position:relative;z-index:1;max-width:480px;width:100%;"><div id="cs-logo" style="font-family:Cormorant,serif;font-weight:300;font-size:20px;letter-spacing:0.45em;color:#fff;text-transform:lowercase;margin-bottom:80px;">kuwadro</div><div style="font-family:Bebas Neue,sans-serif;font-size:clamp(52px,10vw,96px);line-height:0.9;color:#fff;letter-spacing:0.02em;margin-bottom:24px;">Something<br>Is<br>Coming</div><p style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#555;line-height:2.2;margin-bottom:60px;">SS25 Collection — Dropping Soon.<br>Be the first to know.</p><div style="display:flex;gap:0;border:1px solid #222;margin-bottom:16px;"><input id="cs-email" type="email" placeholder="your@email.com" style="flex:1;background:#000;border:none;color:#ccc;font-family:Space Mono,monospace;font-size:11px;padding:16px 20px;outline:none;cursor:crosshair;" onkeydown="if(event.key==='Enter')csSubmit()"><button onclick="csSubmit()" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" style="background:#fff;color:#000;border:none;font-family:Space Mono,monospace;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;padding:16px 24px;cursor:crosshair;white-space:nowrap;transition:opacity 0.2s;">Get 10% Off</button></div><p id="cs-msg" style="font-size:9px;letter-spacing:0.2em;color:#555;text-transform:uppercase;min-height:16px;margin-bottom:8px;"></p><p style="font-size:9px;letter-spacing:0.15em;color:#333;text-transform:uppercase;">No spam. Unsubscribe anytime.</p></div></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="success-screen" id="success-screen">
+  <h2>Order<br>Placed</h2>
+  <div class="oid" id="success-id"></div>
+  <p>Confirmation sent to your email.<br>Your garments are being prepared.</p>
+  <button class="btn-enter" onclick="document.getElementById('success-screen').classList.remove('show');go('shop');"><span>Continue</span></button>
+</div>
+
+<script>
+const S = { cart:[], pay:'card' };
+
+const products = [
+  { id:1, name:'Mass Overcoat',   price:980,  tag:'SS25 / 001', material:'Wool Canvas',    fit:'Oversized', desc:'Double-pressed wool canvas. Dropped shoulder. Ankle length.', color:'#111',
+    svg:`<svg viewBox="0 0 200 300" fill="none"><rect x="60" y="20" width="80" height="260" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="20" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="140" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><line x1="100" y1="20" x2="100" y2="280" stroke="#161616" stroke-width="0.5"/></svg>` },
+  { id:2, name:'Void Jacket',     price:760,  tag:'SS25 / 002', material:'Waxed Cotton',   fit:'Regular',   desc:'Waxed cotton shell. Asymmetric front seam. Unlined.', color:'#0d0d0d',
+    svg:`<svg viewBox="0 0 200 280" fill="none"><rect x="50" y="10" width="100" height="260" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="10" y="50" width="40" height="100" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="150" y="50" width="40" height="100" fill="#181818" stroke="#242424" stroke-width="1"/></svg>` },
+  { id:3, name:'Column Trousers', price:540,  tag:'SS25 / 003', material:'Virgin Wool',    fit:'Tapered',   desc:'Virgin wool. High rise. Tapered to ankle.', color:'#0e0e0e',
+    svg:`<svg viewBox="0 0 180 300" fill="none"><path d="M30 0 L90 0 L90 150 L30 300 L0 300 L50 150 L50 0" fill="#1a1a1a" stroke="#262626" stroke-width="1"/><path d="M90 0 L150 0 L130 150 L180 300 L150 300 L90 150Z" fill="#1a1a1a" stroke="#262626" stroke-width="1"/></svg>` },
+  { id:4, name:'Slab Tee',        price:220,  tag:'SS25 / 004', material:'Jersey 300gsm',  fit:'Oversized', desc:'Heavyweight jersey 300gsm. Raw hem. Oversized.', color:'#0a0a0a',
+    svg:`<svg viewBox="0 0 220 260" fill="none"><rect x="50" y="60" width="120" height="190" fill="#161616" stroke="#222" stroke-width="1"/><rect x="10" y="60" width="40" height="80" fill="#161616" stroke="#222" stroke-width="1"/><rect x="170" y="60" width="40" height="80" fill="#161616" stroke="#222" stroke-width="1"/><rect x="70" y="0" width="80" height="70" fill="#161616" stroke="#222" stroke-width="1"/></svg>` },
+  { id:5, name:'Drape Vest',      price:480,  tag:'SS25 / 005', material:'Deadstock Linen',fit:'Slim',      desc:'Deadstock linen. Asymmetric front. Internal weight tape.', color:'#0c0c0c',
+    svg:`<svg viewBox="0 0 180 280" fill="none"><path d="M40 0 L140 0 L160 280 L20 280Z" fill="#181818" stroke="#242424" stroke-width="1"/><line x1="90" y1="0" x2="90" y2="280" stroke="#141414" stroke-width="0.5"/></svg>` },
+  { id:6, name:'Shell Pant',      price:610,  tag:'SS25 / 006', material:'Tech Nylon',     fit:'Wide Leg',  desc:'Technical nylon. Wide leg. Drawcord at ankle.', color:'#0d0d0d',
+    svg:`<svg viewBox="0 0 200 300" fill="none"><path d="M20 0 L100 0 L100 120 L40 300 L0 300 L60 120Z" fill="#181818" stroke="#242424" stroke-width="1"/><path d="M100 0 L180 0 L140 120 L200 300 L160 300 L100 120Z" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="20" y="0" width="160" height="20" fill="#1c1c1c" stroke="#282828" stroke-width="1"/></svg>` },
+];
+
+function renderShop() {
+  document.getElementById('products-grid').innerHTML = products.map(p=>`
+    <div class="product-card" onclick="openProduct(${p.id})">
+      <div class="product-img"><div class="product-img-inner" style="background:${p.color};"><div class="prod-shape">${p.svg}</div></div></div>
+      <span class="product-tag">${p.tag}</span>
+      <div class="product-overlay">
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">PHP ${p.price.toLocaleString()}</div>
+        <div class="product-hover-reveal">
+          <div class="product-desc-small">${p.desc}</div>
+          <button class="btn-add" onclick="event.stopPropagation();addCart(${p.id})">+ Add to Cart</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openProduct(id) {
+  const p = products.find(x=>x.id===id);
+  const dv = document.getElementById('detail-visual');
+  dv.innerHTML = p.svg;
+  dv.style.background = p.color;
+  document.getElementById('detail-tag').textContent = p.tag;
+  document.getElementById('detail-name').textContent = p.name;
+  document.getElementById('detail-price').textContent = `PHP ${p.price.toLocaleString()}`;
+  document.getElementById('detail-desc').textContent = p.desc;
+  document.getElementById('detail-specs').innerHTML = `
+    <div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">${p.material}</div></div>
+    <div class="spec-item"><div class="spec-label">Fit</div><div class="spec-value">${p.fit}</div></div>
+    <div class="spec-item"><div class="spec-label">Origin</div><div class="spec-value">Handmade</div></div>
+    <div class="spec-item"><div class="spec-label">Season</div><div class="spec-value">SS25</div></div>`;
+  document.getElementById('detail-add-btn').onclick = ()=>{ addCart(p.id); };
+  go('product');
+}
+
+function pickSize(btn) { document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+
+function addCart(id) {
+  const p = products.find(x=>x.id===id);
+  const ex = S.cart.find(i=>i.id===id);
+  ex ? ex.qty++ : S.cart.push({...p,qty:1});
+  syncCart(); toast(`${p.name} added`);
+}
+
+function removeCart(id) { S.cart=S.cart.filter(i=>i.id!==id); syncCart(); }
+
+function syncCart() {
+  const count = S.cart.reduce((a,i)=>a+i.qty,0);
+  const total = S.cart.reduce((a,i)=>a+i.price*i.qty,0);
+  document.getElementById('cart-count').textContent = count;
+  const di=document.getElementById('drawer-items'), df=document.getElementById('drawer-footer');
+  if (!S.cart.length) {
+    di.innerHTML=`<div class="cart-empty-msg"><div class="cart-empty-icon">∅</div><span>Your cart is empty</span></div>`;
+    df.style.display='none';
+  } else {
+    di.innerHTML=S.cart.map(i=>`
+      <div class="ci-row">
+        <div class="ci-thumb" style="background:${i.color};"></div>
+        <div class="ci-info"><div class="ci-name">${i.name}</div><div class="ci-meta">Qty: ${i.qty}</div></div>
+        <div><div class="ci-price">PHP ${(i.price*i.qty).toLocaleString()}</div>
+        <button onclick="removeCart(${i.id})" style="background:none;border:none;color:var(--dust);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;cursor:crosshair;margin-top:6px;display:block;">Remove</button></div>
+      </div>`).join('');
+    df.style.display='block';
+    document.getElementById('drawer-total-val').textContent=`PHP ${total.toLocaleString()}`;
+  }
+  const ci=document.getElementById('checkout-items');
+  if(ci){
+    ci.innerHTML=S.cart.length?S.cart.map(i=>`
+      <div class="ci-row">
+        <div class="ci-thumb" style="background:${i.color};"></div>
+        <div class="ci-info"><div class="ci-name">${i.name}</div><div class="ci-meta">Qty ${i.qty}</div></div>
+        <div class="ci-price">PHP ${(i.price*i.qty).toLocaleString()}</div>
+      </div>`).join(''):`<p style="font-size:10px;color:var(--dust);">No items</p>`;
+    document.getElementById('co-sub').textContent=`PHP ${total.toLocaleString()}`;
+    document.getElementById('co-total').textContent=`PHP ${total.toLocaleString()}`;
+  }
+}
+
+function toggleCart() {
+  const open=document.getElementById('cart-drawer').classList.contains('open');
+  document.getElementById('cart-drawer').classList.toggle('open',!open);
+  document.getElementById('cart-overlay').classList.toggle('open',!open);
+  if(!open) syncCart();
+}
+
+function pickPay(m,el) {
+  S.pay=m;
+  document.querySelectorAll('.pay-opt').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pay-card').style.display   = m==='card'   ?'block':'none';
+  document.getElementById('pay-paypal').style.display = m==='paypal' ?'block':'none';
+  document.getElementById('pay-apple').style.display  = m==='apple'  ?'block':'none';
+  document.getElementById('card-submit').style.display= m==='card'   ?'block':'none';
+}
+
+function fmtCard(i){let v=i.value.replace(/\D/g,'').substring(0,16);i.value=v.replace(/(\d{4})(?=\d)/g,'$1 ');}
+function fmtExp(i){let v=i.value.replace(/\D/g,'').substring(0,4);if(v.length>=2)v=v.substring(0,2)+' / '+v.substring(2);i.value=v;}
+function handlePayPal(){toast('Redirecting to PayPal...');setTimeout(()=>{if(chkEmail())finish();},1500);}
+function handleApple(){toast('Authenticating...');setTimeout(()=>{if(chkEmail())finish();},1500);}
+function chkEmail(){if(!document.getElementById('email').value){toast('Please enter your email');return false;}return true;}
+function submitOrder(){
+  if(!S.cart.length){toast('Your cart is empty');return;}
+  const n=document.getElementById('card-num')?.value.replace(/\s/g,'');
+  if(!n||n.length<16){toast('Enter a valid card number');return;}
+  if(!chkEmail())return;
+  finish();
+}
+function finish(){
+  const id='KW-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('success-id').textContent='Order '+id;
+  document.getElementById('success-screen').classList.add('show');
+  S.cart=[];syncCart();
+}
+
+// KEY FIX: each page is position:fixed so switching pages = instant page replace, no scroll needed
+function go(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  el.classList.add('active');
+  el.scrollTop = 0; // reset scroll within the page itself
+  if(page==='checkout') syncCart();
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+renderShop();
+pickPay('card', document.querySelector('.pay-opt'));
+document.querySelectorAll('.sw input').forEach(inp=>{
+  inp.addEventListener('focus',()=>inp.closest('.sw').classList.add('focused'));
+  inp.addEventListener('blur',()=>inp.closest('.sw').classList.remove('focused'));
+});
+
+async function csSubmit() {
+  const emailEl = document.getElementById('cs-email');
+  const msg     = document.getElementById('cs-msg');
+  const email   = emailEl.value.trim();
+  const btn     = document.querySelector('#coming-soon button[onclick="csSubmit()"]');
+
+  if (!email || !email.includes('@')) {
+    msg.style.color = '#888';
+    msg.textContent = 'Please enter a valid email.';
+    return;
+  }
+
+  // Loading state
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+  msg.style.color = '#555';
+  msg.textContent = 'Submitting...';
+
+  try {
+    const res  = await fetch('/.netlify/functions/subscribe', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      msg.style.color = '#ccc';
+      if (data.existing) {
+        msg.textContent = 'Already registered. Your code: KUWADRO10';
+      } else {
+        msg.textContent = "You\'re in. Use code KUWADRO10 for 10% off.";
+      }
+      emailEl.value = '';
+    } else {
+      msg.style.color = '#888';
+      msg.textContent = data.error || 'Something went wrong. Try again.';
+    }
+  } catch (e) {
+    msg.style.color = '#888';
+    msg.textContent = 'Connection error. Try again.';
+  } finally {
+    if (btn) { btn.textContent = 'Get 10% Off'; btn.disabled = false; }
+  }
+}
+</script>
+</body>
+</html>
