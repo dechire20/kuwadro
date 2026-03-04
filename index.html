@@ -305,7 +305,7 @@ nav {
 <div id="page-shop" class="page">
   <div class="page-inner">
     <div class="page-header">
-      <div><div class="section-label">SS25</div><h2>Shop</h2></div>
+      <div><div class="section-label">SS26</div><h2>Shop</h2></div>
       <span>6 Pieces</span>
     </div>
     <div class="products-grid" id="products-grid"></div>
@@ -350,7 +350,7 @@ nav {
   <div class="page-inner">
     <div class="page-header">
       <div><div class="section-label">Visual</div><h2>Lookbook</h2></div>
-      <span>SS25 — Vol. I</span>
+      <span>SS26 — Vol. I</span>
     </div>
     <div class="lookbook-grid">
       <div class="look-item"><div class="look-visual" style="background:#111;"><svg width="38%" height="65%" viewBox="0 0 200 300" fill="none"><rect x="60" y="20" width="80" height="260" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="20" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="140" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/></svg><div class="look-label">Look 01 — Overcoat</div></div></div>
@@ -471,7 +471,7 @@ nav {
   <div style="position:relative;z-index:1;max-width:480px;width:100%;">
     <div id="cs-logo" style="font-family:Cormorant,serif;font-weight:300;font-size:20px;letter-spacing:0.45em;color:#fff;text-transform:lowercase;margin-bottom:80px;">kuwadro</div>
     <div style="font-family:Bebas Neue,sans-serif;font-size:clamp(52px,10vw,96px);line-height:0.9;color:#fff;letter-spacing:0.02em;margin-bottom:24px;">Something<br>Is<br>Coming</div>
-    <p style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#555;line-height:2.2;margin-bottom:60px;">SS25 Collection — Dropping Soon.<br>Be the first to know.</p>
+    <p style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#555;line-height:2.2;margin-bottom:60px;">SS26 Collection — Dropping Soon.<br>Be the first to know.</p>
     <div style="display:flex;gap:0;border:1px solid #222;margin-bottom:16px;">
       <input id="cs-email" type="email" placeholder="your@email.com"
         style="flex:1;min-width:0;background:#000;border:none;color:#ccc;font-family:Space Mono,monospace;font-size:11px;padding:16px 20px;outline:none;cursor:crosshair;"
@@ -500,17 +500,17 @@ nav {
 const S = { cart:[], pay:'card' };
 
 const products = [
-  { id:1, name:'Mass Overcoat',   price:980,  tag:'SS25 / 001', material:'Wool Canvas',    fit:'Oversized', desc:'Double-pressed wool canvas. Dropped shoulder. Ankle length.', color:'#111',
+  { id:1, name:'Mass Overcoat',   price:980,  tag:'SS26 / 001', material:'Wool Canvas',    fit:'Oversized', desc:'Double-pressed wool canvas. Dropped shoulder. Ankle length.', color:'#111',
     svg:`<svg viewBox="0 0 200 300" fill="none"><rect x="60" y="20" width="80" height="260" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="20" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><rect x="140" y="55" width="40" height="110" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1"/><line x1="100" y1="20" x2="100" y2="280" stroke="#161616" stroke-width="0.5"/></svg>` },
-  { id:2, name:'Void Jacket',     price:760,  tag:'SS25 / 002', material:'Waxed Cotton',   fit:'Regular',   desc:'Waxed cotton shell. Asymmetric front seam. Unlined.', color:'#0d0d0d',
+  { id:2, name:'Void Jacket',     price:760,  tag:'SS26 / 002', material:'Waxed Cotton',   fit:'Regular',   desc:'Waxed cotton shell. Asymmetric front seam. Unlined.', color:'#0d0d0d',
     svg:`<svg viewBox="0 0 200 280" fill="none"><rect x="50" y="10" width="100" height="260" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="10" y="50" width="40" height="100" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="150" y="50" width="40" height="100" fill="#181818" stroke="#242424" stroke-width="1"/></svg>` },
-  { id:3, name:'Column Trousers', price:540,  tag:'SS25 / 003', material:'Virgin Wool',    fit:'Tapered',   desc:'Virgin wool. High rise. Tapered to ankle.', color:'#0e0e0e',
+  { id:3, name:'Column Trousers', price:540,  tag:'SS26 / 003', material:'Virgin Wool',    fit:'Tapered',   desc:'Virgin wool. High rise. Tapered to ankle.', color:'#0e0e0e',
     svg:`<svg viewBox="0 0 180 300" fill="none"><path d="M30 0 L90 0 L90 150 L30 300 L0 300 L50 150 L50 0" fill="#1a1a1a" stroke="#262626" stroke-width="1"/><path d="M90 0 L150 0 L130 150 L180 300 L150 300 L90 150Z" fill="#1a1a1a" stroke="#262626" stroke-width="1"/></svg>` },
-  { id:4, name:'Slab Tee',        price:220,  tag:'SS25 / 004', material:'Jersey 300gsm',  fit:'Oversized', desc:'Heavyweight jersey 300gsm. Raw hem. Oversized.', color:'#0a0a0a',
+  { id:4, name:'Slab Tee',        price:220,  tag:'SS26 / 004', material:'Jersey 300gsm',  fit:'Oversized', desc:'Heavyweight jersey 300gsm. Raw hem. Oversized.', color:'#0a0a0a',
     svg:`<svg viewBox="0 0 220 260" fill="none"><rect x="50" y="60" width="120" height="190" fill="#161616" stroke="#222" stroke-width="1"/><rect x="10" y="60" width="40" height="80" fill="#161616" stroke="#222" stroke-width="1"/><rect x="170" y="60" width="40" height="80" fill="#161616" stroke="#222" stroke-width="1"/><rect x="70" y="0" width="80" height="70" fill="#161616" stroke="#222" stroke-width="1"/></svg>` },
-  { id:5, name:'Drape Vest',      price:480,  tag:'SS25 / 005', material:'Deadstock Linen',fit:'Slim',      desc:'Deadstock linen. Asymmetric front. Internal weight tape.', color:'#0c0c0c',
+  { id:5, name:'Drape Vest',      price:480,  tag:'SS26 / 005', material:'Deadstock Linen',fit:'Slim',      desc:'Deadstock linen. Asymmetric front. Internal weight tape.', color:'#0c0c0c',
     svg:`<svg viewBox="0 0 180 280" fill="none"><path d="M40 0 L140 0 L160 280 L20 280Z" fill="#181818" stroke="#242424" stroke-width="1"/><line x1="90" y1="0" x2="90" y2="280" stroke="#141414" stroke-width="0.5"/></svg>` },
-  { id:6, name:'Shell Pant',      price:610,  tag:'SS25 / 006', material:'Tech Nylon',     fit:'Wide Leg',  desc:'Technical nylon. Wide leg. Drawcord at ankle.', color:'#0d0d0d',
+  { id:6, name:'Shell Pant',      price:610,  tag:'SS26 / 006', material:'Tech Nylon',     fit:'Wide Leg',  desc:'Technical nylon. Wide leg. Drawcord at ankle.', color:'#0d0d0d',
     svg:`<svg viewBox="0 0 200 300" fill="none"><path d="M20 0 L100 0 L100 120 L40 300 L0 300 L60 120Z" fill="#181818" stroke="#242424" stroke-width="1"/><path d="M100 0 L180 0 L140 120 L200 300 L160 300 L100 120Z" fill="#181818" stroke="#242424" stroke-width="1"/><rect x="20" y="0" width="160" height="20" fill="#1c1c1c" stroke="#282828" stroke-width="1"/></svg>` },
 ];
 
@@ -543,7 +543,7 @@ function openProduct(id) {
     <div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">${p.material}</div></div>
     <div class="spec-item"><div class="spec-label">Fit</div><div class="spec-value">${p.fit}</div></div>
     <div class="spec-item"><div class="spec-label">Origin</div><div class="spec-value">Handmade</div></div>
-    <div class="spec-item"><div class="spec-label">Season</div><div class="spec-value">SS25</div></div>`;
+    <div class="spec-item"><div class="spec-label">Season</div><div class="spec-value">SS26</div></div>`;
   document.getElementById('detail-add-btn').onclick = ()=>{ addCart(p.id); };
   go('product');
 }
